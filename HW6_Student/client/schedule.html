@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <title>My Schedule</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expanded navbar-light bg-light">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link" href="/home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/schedule">Schedule</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link active" href="/addEvent">Add
+            Event</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link active" href="/logout">Logout</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="container mb-5">
+      <div class="alert alert-secondary" role="alert">
+        Click on a day to see its events
+      </div>
+    </div>
+    <div class="container mb-3">
+      <ul id="days" class="nav nav-tabs nav-fill">
+        <li class="nav-item">
+          <a class="nav-link" onclick=
+                "formTable(this)">Sunday</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick=
+                "formTable(this)">Monday</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick=
+                "formTable(this)">Tuesday</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick=
+                "formTable(this)">Wednesday</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick=
+                "formTable(this)">Thursday</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick=
+                "formTable(this)">Friday</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" onclick=
+                "formTable(this)">Saturday</a>
+        </li>
+      </ul><br>
+      <br>
+      <div class="container">
+        <table class="table table-striped" id="scheduleTable">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Time</th>
+              <th scope="col">Location</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Extra Information</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+     function formTable(element) {
+       $('#days li a').removeClass("active");
+       $(element).addClass("active");
+       clearTable();
+       let day = $(element).text().toLowerCase();
+       console.log("day is " + day);
+
+        // var url = "localhost:9001/getSchedule"; 
+        // url.searchParams.append('day', day);
+          fetch("/event_details?day=" + day)
+              .then(response => response.json())
+              .then(data => {
+                  console.log(data);
+                  data.forEach(function (data) {
+                      console.log(data);
+                      let row = '<tr><td>' + data.name + '</td><td>' + data.start + '-' + data.end + '</td><td>' + data.location + '</td><td>' + data.phone + '</td><td>' + '<a href="' + data.url  + '">' + data.info + '</a>'  + '</td></tr>';
+                      $('#scheduleTable').append(row);
+                  });
+
+                  // console.log(data.name, data.description, data.time, data.location, data.phone, data.extra)
+                  // let row = '<tr><td>' + data.name + '</td><td>' + data.start + '</td><td>' + data.end + '</td><td>' + data.phone + '</td><td>' + data.location + '</td><td>' + data.info + '</td><td>' + data.url + '</td></tr>';
+                  // $('#scheduleTable').append(row);
+              });
+
+       
+     }
+
+     function clearTable() {
+       $('#scheduleTable tbody').empty();
+     }
+    </script>
+  </body>
+</html>
