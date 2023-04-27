@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Login</title>
+	</head>
+	  <body>
+		<h1>Login</h1>
+		<form id="login-form">
+		  <label for="username">Username:</label>
+		  <input type="text" id="username" name="username"><br><br>
+		  <label for="password">Password:</label>
+		  <input type="password" id="password" name="password"><br><br>
+		  <button type="submit">Submit</button>
+		</form>
+		<p id="login-message"></p>
+		<script>
+		  const form = document.querySelector('#login-form');
+		  const message = document.querySelector('#login-message');
+	  
+		  form.addEventListener('submit', (event) => {
+			event.preventDefault();
+			var username = document.getElementById("username").value;
+			var password = document.getElementById("password").value;
+			// console.log("User name is : " + username);
+			// console.log("Password is : " + password);
+			fetch('/sendLoginDetails', {
+			  method: 'POST',
+			  headers: { 'Content-Type': 'application/json' },
+			  body: JSON.stringify({ username, password })
+			})
+			.then(response => response.json())
+			.then(data => {
+			  if (data.status === 'success') {
+				message.textContent = 'Login successful!';
+				// Redirect to the protected route
+				window.location.href = '/schedule';
+			  } else {
+				message.textContent = 'Invalid username or password';
+			  }
+			})
+			.catch(error => {
+			  message.textContent = 'An error occurred while logging in';
+			  console.error(error);
+			});
+		  });
+		</script>
+	  </body>
+	  </html>
